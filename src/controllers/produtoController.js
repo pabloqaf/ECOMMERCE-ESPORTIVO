@@ -1,16 +1,23 @@
 const db = require('../config/db');
 
-// Listar todos os produtos
+
 exports.listarProdutos = async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM produtos');
+    const query = `
+      SELECT p.id, p.nome, p.descricao, p.preco, p.estoque, p.imagem_url, c.nome AS categoria
+      FROM produtos p
+      LEFT JOIN categorias c ON p.categoria_id = c.id
+      ORDER BY p.id ASC;
+    `;
+    const result = await db.query(query);
     res.status(200).json(result.rows);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar produtos' });
+    console.error('Erro no Banco de Dados:', error);
+    res.status(500).json({ error: 'Erro ao buscar produtos no banco de dados' });
   }
 };
 
-// Obter produto por ID
+
 exports.obterProdutoPorId = async (req, res) => {
   const { id } = req.params;
   try {
@@ -24,13 +31,12 @@ exports.obterProdutoPorId = async (req, res) => {
   }
 };
 
-// Criar novo produto
 exports.criarProduto = async (req, res) => {
-  const { nome, descricao, preco, estoque } = req.body;
+  const { categoria_id, nome, descricao, preco, estoque, imagem_url } = req.body;
   try {
     const result = await db.query(
-      'INSERT INTO produtos (nome, descricao, preco, estoque) VALUES ($1, $2, $3, $4) RETURNING *',
-      [nome, descricao, preco, estoque]
+      'INSERT INTO produtos (categoria_id, nome, descricao, preco, estoque, imagem_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [categoria_id, nome, descricao, preco, estoque, imagem_url]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {

@@ -4,84 +4,184 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SportStore - E-Commerce Esportivo</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
 
-
-  <nav class="bg-blue-900 text-white p-4 shadow-md sticky top-0 z-50">
+  <!-- NAVBAR -->
+  <nav class="bg-blue-900 text-white p-4 shadow-md sticky top-0 z-40">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
-      <h1 class="text-2xl font-bold tracking-wider">⚡ SportStore</h1>
-      <div class="space-x-4">
-        <a href="#" class="hover:text-blue-300">Início</a>
-        <a href="#produtos" class="hover:text-blue-300">Produtos</a>
-        <button id="cart-btn" class="bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold hover:bg-yellow-400">
+      <h1 class="text-2xl font-bold cursor-pointer" onclick="showSection('hero-section')">⚡ SportStore</h1>
+      <div class="flex items-center space-x-4">
+        <button onclick="showSection('hero-section')" class="hover:text-blue-300">Início</button>
+        <button onclick="showSection('catalog-section')" class="hover:text-blue-300">Produtos</button>
+        
+        <!-- Botão do Carrinho -->
+        <button onclick="toggleCartModal()" class="bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold hover:bg-yellow-400">
           🛒 Carrinho (<span id="cart-count">0</span>)
         </button>
+
+        <!-- Área do Usuário -->
+        <div id="user-area" class="flex items-center space-x-2">
+          <button onclick="openModal('login-modal')" class="bg-blue-700 px-3 py-2 rounded hover:bg-blue-600">Login</button>
+          <button onclick="openModal('register-modal')" class="bg-green-600 px-3 py-2 rounded hover:bg-green-500">Cadastrar</button>
+        </div>
       </div>
     </div>
   </nav>
 
+  <!-- 1. TELA DE INÍCIO (HERO PAGE) -->
+  <section id="hero-section" class="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-24 text-center flex-1 flex flex-col justify-center items-center">
+    <h2 class="text-5xl font-extrabold mb-4">Alta Performance para o Seu Esporte</h2>
+    <p class="text-xl text-blue-200 mb-8 max-w-2xl">Encontre os melhores equipamentos, vestuários e acessórios das principais modalidades com entrega rápida.</p>
+    <button onclick="showSection('catalog-section')" class="bg-yellow-500 text-black text-lg font-bold px-8 py-4 rounded-xl shadow-lg hover:bg-yellow-400 transform transition hover:scale-105">
+      Ver Catálogo de Produtos 🚀
+    </button>
+  </section>
 
-  <header class="bg-blue-800 text-white py-12 text-center">
-    <h2 class="text-4xl font-extrabold mb-2">Equipe-se com os Melhores Produtos</h2>
-    <p class="text-lg text-blue-200">De tênis de corrida a equipamentos de alta performance.</p>
-  </header>
-
- 
-  <main class="max-w-6xl mx-auto py-10 px-4">
-    <h3 class="text-2xl font-bold mb-6 text-gray-800 border-b-2 border-blue-900 pb-2">Catálogo de Produtos</h3>
-    
-   
+  <!-- 2. CATÁLOGO DE PRODUTOS -->
+  <main id="catalog-section" class="max-w-6xl mx-auto py-10 px-4 flex-1 hidden">
+    <h3 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-blue-900 pb-2">Catálogo Esportivo</h3>
     <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    
       <p class="text-gray-500 col-span-full text-center">Carregando produtos do servidor...</p>
     </div>
   </main>
 
+  <!-- MODAL DE LOGIN -->
+  <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded-lg w-full max-w-md shadow-xl relative">
+      <button onclick="closeModal('login-modal')" class="absolute top-2 right-3 text-gray-500 text-xl font-bold">&times;</button>
+      <h3 class="text-2xl font-bold mb-4 text-blue-900">Entrar na Conta</h3>
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold">E-mail</label>
+          <input type="email" id="login-email" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-900">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold">Senha</label>
+          <input type="password" id="login-senha" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-900">
+        </div>
+        <button type="submit" class="w-full bg-blue-900 text-white font-bold py-2 rounded hover:bg-blue-800">Entrar</button>
+      </form>
+    </div>
+  </div>
 
+  <!-- MODAL DE CADASTRO -->
+  <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded-lg w-full max-w-md shadow-xl relative">
+      <button onclick="closeModal('register-modal')" class="absolute top-2 right-3 text-gray-500 text-xl font-bold">&times;</button>
+      <h3 class="text-2xl font-bold mb-4 text-green-700">Criar Nova Conta</h3>
+      <form onsubmit="handleRegister(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold">Nome Completo</label>
+          <input type="text" id="reg-nome" required class="w-full border p-2 rounded focus:ring-2 focus:ring-green-600">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold">E-mail</label>
+          <input type="email" id="reg-email" required class="w-full border p-2 rounded focus:ring-2 focus:ring-green-600">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold">Senha</label>
+          <input type="password" id="reg-senha" required class="w-full border p-2 rounded focus:ring-2 focus:ring-green-600">
+        </div>
+        <button type="submit" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-500">Cadastrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DO CARRINHO COM ITENS DETALHADOS -->
+  <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded-lg w-full max-w-lg shadow-xl relative flex flex-col max-h-[80vh]">
+      <button onclick="toggleCartModal()" class="absolute top-2 right-3 text-gray-500 text-xl font-bold">&times;</button>
+      <h3 class="text-2xl font-bold mb-4 text-blue-900">Seu Carrinho de Compras</h3>
+      
+      <div id="cart-items-container" class="overflow-y-auto flex-1 divide-y">
+        <!-- Itens do carrinho serão inseridos dinamicamente -->
+      </div>
+
+      <div class="border-t pt-4 mt-4 flex justify-between items-center">
+        <div>
+          <span class="text-gray-600">Total:</span>
+          <span id="cart-total" class="text-2xl font-bold text-green-600 ml-2">R$ 0,00</span>
+        </div>
+        <button onclick="checkoutCart()" class="bg-yellow-500 text-black px-6 py-2 rounded-lg font-bold hover:bg-yellow-400">Finalizar Pedido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT JS -->
   <script>
-    const API_URL = 'http://localhost:3000/api/produtos';
+    const API_BASE = 'http://localhost:3000/api';
     let cart = [];
+    let currentUser = JSON.parse(localStorage.getItem('user')) || null;
 
-   
-    async function fetchProducts() {
-      try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error('Erro ao buscar produtos');
-        
-        const products = await response.json();
-        renderProducts(products);
-      } catch (error) {
-        console.error(error);
-        document.getElementById('product-grid').innerHTML = `
-          <div class="col-span-full text-center text-red-500 font-bold">
-            Não foi possível carregar os produtos. Verifique se o backend está ligado!
-          </div>
+    // Alternar entre Seções (Início / Catálogo)
+    function showSection(sectionId) {
+      document.getElementById('hero-section').classList.add('hidden');
+      document.getElementById('catalog-section').classList.add('hidden');
+      document.getElementById(sectionId).classList.remove('hidden');
+
+      if (sectionId === 'catalog-section') {
+        fetchProducts();
+      }
+    }
+
+    // Modal Helpers
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function toggleCartModal() { 
+      const modal = document.getElementById('cart-modal');
+      modal.classList.toggle('hidden');
+      if (!modal.classList.contains('hidden')) renderCart();
+    }
+
+    // Atualizar UI de Usuário Logado
+    function updateAuthUI() {
+      const userArea = document.getElementById('user-area');
+      if (currentUser) {
+        userArea.innerHTML = `
+          <span class="text-yellow-400 font-semibold">Olá, ${currentUser.nome}</span>
+          <button onclick="handleLogout()" class="bg-red-600 px-3 py-1 rounded text-sm hover:bg-red-500">Sair</button>
+        `;
+      } else {
+        userArea.innerHTML = `
+          <button onclick="openModal('login-modal')" class="bg-blue-700 px-3 py-2 rounded hover:bg-blue-600">Login</button>
+          <button onclick="openModal('register-modal')" class="bg-green-600 px-3 py-2 rounded hover:bg-green-500">Cadastrar</button>
         `;
       }
     }
 
-   
+    // Buscar Produtos
+    async function fetchProducts() {
+      try {
+        const response = await fetch(`${API_BASE}/produtos`);
+        if (!response.ok) throw new Error('Erro ao carregar');
+        const products = await response.json();
+        renderProducts(products);
+      } catch (err) {
+        document.getElementById('product-grid').innerHTML = `
+          <p class="col-span-full text-center text-red-500 font-bold">Erro ao carregar produtos. Verifique se o backend está ativo.</p>
+        `;
+      }
+    }
+
+    // Renderizar Produtos
     function renderProducts(products) {
       const grid = document.getElementById('product-grid');
-      
-      if (products.length === 0) {
-        grid.innerHTML = `<p class="col-span-full text-center text-gray-500">Nenhum produto cadastrado no momento.</p>`;
+      if (!products.length) {
+        grid.innerHTML = '<p class="col-span-full text-center text-gray-500">Nenhum produto cadastrado.</p>';
         return;
       }
-
-      grid.innerHTML = products.map(product => `
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 flex flex-col justify-between">
+      grid.innerHTML = products.map(p => `
+        <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col justify-between">
           <div class="p-5">
-            <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Esporte</span>
-            <h4 class="text-xl font-bold text-gray-800 mt-1">${product.nome}</h4>
-            <p class="text-gray-600 text-sm mt-2">${product.descricao || 'Sem descrição cadastrada.'}</p>
+            <span class="text-xs font-semibold text-blue-600 uppercase">${p.categoria || 'Esporte'}</span>
+            <h4 class="text-xl font-bold text-gray-800 mt-1">${p.nome}</h4>
+            <p class="text-gray-600 text-sm mt-2">${p.descricao || ''}</p>
           </div>
           <div class="p-5 bg-gray-50 border-t flex justify-between items-center">
-            <span class="text-2xl font-extrabold text-green-600">R$ ${parseFloat(product.preco).toFixed(2)}</span>
-            <button onclick="addToCart('${product.nome}')" class="bg-blue-900 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition">
+            <span class="text-2xl font-extrabold text-green-600">R$ ${parseFloat(p.preco).toFixed(2)}</span>
+            <button onclick="addToCart(${p.id}, '${p.nome}', ${p.preco})" class="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-800">
               Adicionar
             </button>
           </div>
@@ -89,15 +189,134 @@
       `).join('');
     }
 
-   
-    function addToCart(productName) {
-      cart.push(productName);
-      document.getElementById('cart-count').innerText = cart.length;
-      alert(`${productName} foi adicionado ao carrinho!`);
+    // Lógica do Carrinho
+    function addToCart(id, nome, preco) {
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.quantidade += 1;
+      } else {
+        cart.push({ id, nome, preco: parseFloat(preco), quantidade: 1 });
+      }
+      updateCartBadge();
+      alert(`${nome} adicionado ao carrinho!`);
     }
 
-   
-    fetchProducts();
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      renderCart();
+      updateCartBadge();
+    }
+
+    function updateCartBadge() {
+      const totalItems = cart.reduce((acc, item) => acc + item.quantidade, 0);
+      document.getElementById('cart-count').innerText = totalItems;
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items-container');
+      const totalEl = document.getElementById('cart-total');
+
+      if (!cart.length) {
+        container.innerHTML = '<p class="text-center text-gray-500 py-6">Seu carrinho está vazio.</p>';
+        totalEl.innerText = 'R$ 0,00';
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = cart.map(item => {
+        const subtotal = item.preco * item.quantidade;
+        total += subtotal;
+        return `
+          <div class="flex justify-between items-center py-3">
+            <div>
+              <h5 class="font-bold text-gray-800">${item.nome}</h5>
+              <p class="text-sm text-gray-500">R$ ${item.preco.toFixed(2)} x ${item.quantidade}</p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="font-bold text-green-600">R$ ${subtotal.toFixed(2)}</span>
+              <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 font-bold">X</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      totalEl.innerText = `R$ ${total.toFixed(2)}`;
+    }
+
+    function checkoutCart() {
+      if (!currentUser) {
+        alert('Faça login para finalizar a compra!');
+        toggleCartModal();
+        openModal('login-modal');
+        return;
+      }
+      if (!cart.length) {
+        alert('O carrinho está vazio!');
+        return;
+      }
+      alert(`Pedido finalizado com sucesso para ${currentUser.nome}!`);
+      cart = [];
+      updateCartBadge();
+      toggleCartModal();
+    }
+
+    // Handlers de Auth
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const senha = document.getElementById('login-senha').value;
+
+      try {
+        const response = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Erro ao logar');
+
+        currentUser = data.usuario || { nome: email.split('@')[0] };
+        localStorage.setItem('user', JSON.stringify(currentUser));
+        updateAuthUI();
+        closeModal('login-modal');
+        alert('Login realizado com sucesso!');
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const nome = document.getElementById('reg-nome').value;
+      const email = document.getElementById('reg-email').value;
+      const senha = document.getElementById('reg-senha').value;
+
+      try {
+        const response = await fetch(`${API_BASE}/auth/registro`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, email, senha })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Erro ao cadastrar');
+
+        alert('Cadastro realizado com sucesso! Faça login.');
+        closeModal('register-modal');
+        openModal('login-modal');
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('user');
+      updateAuthUI();
+    }
+
+    // Inicialização
+    updateAuthUI();
+    updateCartBadge();
   </script>
 </body>
 </html>
